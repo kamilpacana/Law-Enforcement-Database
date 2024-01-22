@@ -1,0 +1,362 @@
+/* CRIME DATABASE - Creation of Relations */
+
+CREATE TABLE Report(
+	report_num int PRIMARY KEY,
+	description varchar,
+	date_completed date);
+	
+CREATE TABLE Person(
+	ssn int PRIMARY KEY,
+	f_name varchar,
+	l_name varchar,
+	dob date,
+	sex varchar,
+	street_address varchar,
+	city varchar,
+	state varchar,
+	zip_code int);
+
+CREATE TABLE Report_Person_Involved(
+	report_num int,
+	ssn int,
+	role varchar,
+	PRIMARY KEY(report_num, ssn),
+	FOREIGN KEY (report_num) REFERENCES Report(report_num),
+	FOREIGN KEY (ssn) REFERENCES Person(ssn));
+
+CREATE TABLE Crime(
+	title varchar,
+	section int PRIMARY KEY,
+	type varchar,
+	name varchar,
+	description varchar);
+
+CREATE TABLE Report_Crime_Record(
+	report_num int,
+	section int,
+	occurence_date date,
+	location varchar,
+	status varchar,
+	PRIMARY KEY(report_num, section),
+	FOREIGN KEY (report_num) REFERENCES Report(report_num),
+	FOREIGN KEY (section) REFERENCES Crime(section));
+
+CREATE TABLE Precinct(
+	dept_name varchar,
+	pct_num int,
+	cmd_ofc_badge_num int,
+	street_address varchar,
+	city varchar,
+	state varchar,
+	zip_code int,
+	PRIMARY KEY(dept_name, pct_num));
+
+CREATE TABLE Officer (
+	badge_num int PRIMARY KEY, 
+	rank varchar(50), 
+	start_date date, 
+	end_date date,
+	salary int,
+	ssn int NOT NULL,
+	pct_num int,
+	dept_name varchar NOT NULL,
+	sup_badge_num int,
+	FOREIGN KEY (ssn) REFERENCES Person (ssn),
+	FOREIGN KEY (pct_num, dept_name) REFERENCES Precinct(pct_num, dept_name),
+	FOREIGN KEY (sup_badge_num) REFERENCES Officer(badge_num));
+	
+CREATE TABLE Report_Officer_Involved(
+	report_num int,
+	badge_num int,
+	police_role varchar,
+	PRIMARY KEY(report_num, badge_num, police_role),
+	FOREIGN KEY (report_num) REFERENCES Report(report_num),
+	FOREIGN KEY (badge_num) REFERENCES Officer(badge_num));
+
+CREATE TABLE Locker(
+	locker_num int PRIMARY KEY,
+	combo int,
+	room int,
+	pct_num int NOT NULL,
+	dept_name varchar NOT NULL,
+	badge_num int,
+	FOREIGN KEY (pct_num, dept_name) REFERENCES Precinct(pct_num, dept_name),
+	FOREIGN KEY (badge_num) REFERENCES Officer(badge_num));
+
+CREATE TABLE Department(
+	dept_name varchar PRIMARY KEY,
+	abbreviation varchar,
+	jurisdiction varchar);
+
+
+/* Inserting data into relations */
+
+
+INSERT INTO REPORT VALUES 
+(11, 'Suspect robbed Bank of America with use of lethal weapon.', '2022-08-26'), 
+(10, 'Witness observed a vehicle crash into a tree. Following this, two suspects fled by foot from the vehicle.', '2021-07-14'), 
+(2, 'Victim held hostage by suspect.', '1986-04-09'), 
+(4, 'Suspect verbally berated and assaulted victim.', '1991-12-12'), 
+(8, 'Two witnesses saw the suspect publicly urinate in front of a restaurant', '2012-09-06'), 
+(9, 'Victim reports car was broken into. Money and valuable were stolen.', '2015-06-08'),
+(6, 'Suspect crashed into a stationary vehicle. Victim in the vehicle reports pain and damage to the vehicle. Suspect failed sobriety test and was found to be intoxicated.', '2003-07-05'), 
+(5, 'Suspect was pulled over after swerving on the road. Suspect failed sobriety test and taken into police custody.', '1999-12-31'), 
+(7, 'Suspect seen throwing trash onto the ground in public park.', '2004-04-22'), 
+(1, 'Three suspects taken into police custody for possession of marijuana.', '1976-05-06'), 
+(3, 'Witness reports seeing suspect throw a rock at victim. Victim sustained minor injuries. Suspect taken into police custody.', '1988-11-28'); 
+
+INSERT INTO Person VALUES (1234567890, 'John', 'Smith', '1974-04-03', 'M', '193 Maple St.', 'Boston','MA', 12111);
+INSERT INTO Person VALUES (1987654322, 'Ella', 'Hurley', '1945-01-13', 'F', '233 West Dr.', 'Boston','MA', 12111);
+INSERT INTO Person VALUES (1123456789, 'Robert', 'Hoover', '1950-11-12', 'M', '1903 Cascase St.', 'Boston','MA', 12111);
+INSERT INTO Person VALUES (1987654321, 'Kennedy', 'Hall', '1984-05-25', 'M', '3233 Huntington Ave.', 'Boston','MA', 12111);
+INSERT INTO Person VALUES (1112345678, 'Claudia', 'May', '1976-03-23', 'F', '921 Massachusetts Ave.', 'Boston', 'MA', 12111);
+INSERT INTO Person VALUES (1223456789, 'Daniel', 'Pronger', '1972-04-03', 'M', '3233 Sandel Dr.', 'Boston','MA',12111);
+INSERT INTO Person VALUES (1234567899, 'Sarah', 'Holiday', '1986-9-13', 'F', '832 Windile St.', 'Boston','MA', 2111);
+INSERT INTO Person VALUES (1923482398, 'Jerry', 'Hertz', '1994-09-23', 'M', '143 Danbury St.', 'Boston','MA', 12111);
+INSERT INTO Person VALUES (1139232343, 'Kenneth', 'Kirken', '1990-04-13', 'M', '1392 Eastern Dr.', 'Boston','MA', 12111);
+INSERT INTO Person VALUES (1389138312, 'Kyle', 'Jid', '1990-9-12', 'M', '103 Brooklyn St.', 'Boston','MA', 12111);
+INSERT INTO Person VALUES (1813983892, 'Bill', 'Roger', '2008-05-25', 'M', '233 Denise Ave.', 'Boston','MA', 12111);
+INSERT INTO Person VALUES (1008212382, 'Ginder', 'Singer', '1966-9-10', 'M', '134 Kennedy St.', 'Boston','MA', 12111);
+INSERT INTO Person VALUES (1318923283, 'Kyle', 'Raider', '1997-03-23', 'M', '1001 Kennedy Ave.', 'Boston', 'MA', 12111);
+INSERT INTO Person VALUES (1000000321, 'May', 'Karin', '1993-09-03', 'F', '1001 Half Day Dr.', 'Boston','MA',12111);
+INSERT INTO Person VALUES (1000031132, 'Sarah', 'Jared', '1986-9-10', 'F', '812 Afrodid St.', 'Boston','MA', 12111);
+INSERT INTO Person VALUES (1013410751, 'Billy', 'Cader', '1996-9-10', 'M', '322 Cisco St.', 'Boston','MA', 12111);
+INSERT INTO Person VALUES (1134192832, 'Carter', 'Smith', '1976-9-10', 'M', '3432 Snickle St.', 'Boston','MA', 12111);
+INSERT INTO Person VALUES (1111192932, 'Jill', 'Kendrick', '1986-9-10', 'F', '31 Windlord St.', 'Raleigh','NC', 53121);
+INSERT INTO Person VALUES (1112281482, 'Kale', 'Handerson', '1996-9-10', 'F', '2932 Shorten Dr.', 'Boston','MA', 12111);
+INSERT INTO Person VALUES (1010992129, 'Paul', 'Ginger', '1996-9-10', 'M', '3432 Snickle St.', 'Boston','MA', 12111);
+INSERT INTO Person VALUES (1112912122, 'Kenneth', 'Jidle', '1973-8-13', 'M', '193 Dearfield St.', 'New York','NY', 10012);
+INSERT INTO Person VALUES (1193190310, 'Brent', 'High', '1960-11-03', 'M', '9331 York Ave.', 'New York','NY', 10013);
+INSERT INTO Person VALUES (1112012112, 'Dally', 'Raider', '1969-12-13', 'M', '942 Jill St.', 'New York','NY', 10012);
+INSERT INTO Person VALUES (1813981382, 'Sofia', 'Din-Din', '2003-09-23', 'F', '101 Crocs Ave.', 'New York','NY', 10012);
+INSERT INTO Person VALUES (1130101301, 'Jacob', 'Gargle', '1999-12-23', 'M', '104 Summer Ave.', 'New York','NY', 10011);
+INSERT INTO Person VALUES (1030101301, 'Perry', 'Platypus', '1989-12-23', 'M', '140 Winter St.', 'New York','NY', 10011);
+
+INSERT INTO Report_Person_Involved VALUES 
+(11, 1318923283, 'Suspect'),
+(10, 1112012112, 'Witness'), 
+(10, 1000000321, 'Suspect'),
+(10, 1000031132, 'Suspect'), 
+(2, 1193190310, 'Victim'),
+(2, 1130101301, 'Suspect'),
+(4, 1130101301, 'Suspect'), 
+(4, 1112012112, 'Victim'), 
+(8, 1000031132, 'Witness'), 
+(8, 1000000321, 'Witness'), 
+(8, 1318923283, 'Suspect'), 
+(9, 1130101301, 'Victim'), 
+(6, 1000031132, 'Suspect'),
+(6, 1000000321, 'Victim'),
+(5, 1318923283, 'Suspect'),
+(7, 1318923283, 'Suspect'),
+(1, 1000000321, 'Suspect'),
+(1, 1318923283, 'Suspect'),
+(3, 1318923283, 'Witness'),
+(3, 1000000321, 'Suspect'),
+(3, 1000031132, 'Victim');
+
+INSERT INTO CRIME VALUES 
+('Title 1', 1, 'Felony','Robbery','Theft of more than 500 dollars of valuables'),
+('Title 1', 2, 'Misdemeanor', 'Possession', 'Possession of illicit substance including drugs'),
+('Title 2', 3, 'Misdemeanor', 'Public Urination', 'Urinating in a public area'),
+('Title 2', 4, 'Misdemeanor', 'Assault', 'Use of unnecessary force against another person for non-self defense purposes.'),
+('Title 2', 5, 'Felony', 'Kidnapping', 'Holding a person hostage against their will'),
+('Title 3', 6, 'Misdemeanor', 'Driving under the influence', 'Operating motor vehicle will intoxicated'),
+('Title 4', 7, 'Infraction', 'Littering', 'Disposal of trash onto public property'),
+('Title 5', 8, 'Misdemeanor', 'Fleeing', 'Fled an active crime scene'),
+('Title 5', 9, 'Felony', 'Auto Burglary', 'Breaking into and entering a vehicle with intent to commit crime'); 
+
+INSERT INTO REPORT_CRIME_Record VALUES
+(11, 1, '07-15-2021', 'Boston', 'Under investigation'),
+(10, 8, '06-13-2021', 'New York', 'Dismissed'),
+(1, 2, '1976-05-05', 'Boston', 'Arrest'),
+(2, 5, '1986-04-08', 'New York', 'Under investigation' ),
+(3, 4, '1988-11-28', 'Boston', 'Dismissed' ),
+(8, 3, '2012-08-06', 'Boston', 'Citation issued' ),
+(6, 6, '2003-07-01', 'Boston', 'Arrest' ),
+(4, 4, '1991-11-28', 'New York', 'Dismissed' ),
+(5, 6, '1999-12-31', 'Boston', 'Arrest' ),
+(7, 7, '2004-03-31', 'Boston', 'Citation issued'),
+(9, 1, '2015-06-06', 'New York', 'Under investigation'),
+(9, 9, '2015-05-06', 'New York', 'Under investigation');
+
+INSERT INTO DEPARTMENT VALUES 
+('Boston Police Department', 'BPD', 'Boston'),
+('New York Police Department', 'NYPD', 'New York');  
+
+INSERT INTO Precinct VALUES
+('Boston Police Department', 1, 1, '189 Tremont St.', 'Boston', 'MA', 12111),
+('Boston Police Department', 2, 4, '849 Kilmore St.', 'Boston', 'MA', 12111),
+('Boston Police Department', 3, 8, '320 Hallway Ave.', 'Boston', 'MA', 12111),
+('Boston Police Department', 4, 7, '931 Franklin St.', 'Boston', 'MA', 12111),
+('New York Police Department', 1, 9, '913 Washington St.', 'New York', 'NY', 10012),
+('New York Police Department', 2, 10, '482 Wall St.', 'New York', 'NY', 10012);
+
+INSERT INTO OFFICER VALUES
+(9, 'Captain', '1980-10-09', null, 150000, 1112912122, 1, 'New York Police Department', 15),
+(10, 'Captain', '1990-10-03', null, 130000, 1193190310, 2, 'New York Police Department', 15),
+(11, 'Lieutenant', '2004-03-12', null, 60000, 1112012112, 1, 'New York Police Department', 9), 
+(1, 'Captain', '1990-03-22', null, 123000, 1234567890, 1, 'Boston Police Department', 16),
+(4, 'Captain', '2003-11-23', null, 120000, 1987654322, 2, 'Boston Police Department', 16),
+(8, 'Captain', '1995-08-15', null, 110000, 1123456789, 3, 'Boston Police Department', 16),
+(7, 'Captain', '2004-04-10', null, 90000, 1987654321, 4, 'Boston Police Department', 16),
+(2, 'Lieutenant', '2009-09-10', null, 95000, 1112345678, 1, 'Boston Police Department', 1),
+(3, 'Detective', '2005-09-10', null, 104000, 1223456789, 1, 'Boston Police Department', 5),
+(5, 'Sergeant', '2010-09-28', null, 99000, 1234567899, 1, 'Boston Police Department', 2),
+(6, 'Lieutenant', '2015-09-28', null, 45000, 1923482398, 2, 'Boston Police Department', 4),
+(12, 'Sergeant', '2010-09-28', '2020-03-12', null, 1139232343, 2, 'Boston Police Department', 6),
+(13, 'Officer', '2016-09-28', null, 69000, 1389138312, 1, 'Boston Police Department', 5),
+(14, 'Officer', '2019-10-28', null, 50000, 1813983892, 2, 'Boston Police Department', 12),
+(15, 'Chief', '1994-09-28', null, 130000, 1030101301, 1, 'New York Police Department', null),
+(16, 'Chief', '1991-03-18', null, 145000, 1008212382, 1, 'Boston Police Department', null);
+
+ALTER TABLE Precinct 
+ADD FOREIGN KEY (cmd_ofc_badge_num) REFERENCES Officer(badge_num);
+
+INSERT INTO Locker VALUES
+(101, 8439, 1, 1, 'New York Police Department', 9),
+(201, 3821, 1, 2, 'New York Police Department', 10),
+(102, 1282, 1, 1, 'New York Police Department', 11),
+(301, 1380, 3, 1, 'Boston Police Department', 1),
+(401, 3413, 4, 2, 'Boston Police Department', 4),
+(501, 8493, 5, 3, 'Boston Police Department', 8),
+(601, 3483, 6, 4, 'Boston Police Department', 7),
+(302, 3180, 3, 1, 'Boston Police Department', 2),
+(303, 8423, 3, 1, 'Boston Police Department', 3),
+(304, 6820, 3, 1, 'Boston Police Department', 5),
+(402, 7512, 4, 2, 'Boston Police Department', 6),
+(403, 9123, 4, 2, 'Boston Police Department', 12),
+(502, 1201, 5, 3, 'Boston Police Department', 13),
+(602, 4312, 5, 4, 'Boston Police Department', 14),
+(603, 9534, 5, 4, 'Boston Police Department', null);
+
+INSERT INTO REPORT_OFFICER_Involved VALUES
+(11, 6, 'Author'), 
+(11, 2, 'Present at crime scene'), 
+(8, 11, 'Issued citation' ), 
+(7, 10, 'Issued citation'), 
+(6, 6, 'Author'), 
+(5, 12, 'Author'), 
+(5, 1, 'Made arrest'), 
+(4, 10, 'Present at crime scene'), 
+(3, 8, 'Present at crime scene'), 
+(8, 4, 'Author'), 
+(6, 12, 'Made arrest'), 
+(4, 10, 'Author'), 
+(3, 14, 'Author'), 
+(7, 6, 'Author'), 
+(2, 11, 'Author'), 
+(9, 9, 'Author'), 
+(10, 11, 'Author'), 
+(1, 6, 'Author');
+
+
+/* Queries below */
+
+
+/* Query #1: Find department(s) that spend more than $400,000 total on salaries. [dept_name, sum(salary)] */
+
+SELECT Department.dept_name, sum(Officer.salary)
+FROM Officer, Person, Department
+WHERE Person.ssn = Officer.ssn
+AND Officer.dept_name = Department.dept_name
+GROUP BY Department.dept_name
+HAVING sum(Officer.salary) > 400000
+
+/* Query #2: Find the longest serving officer at each precinct for Boston’s police department. Return the Officer’s first name, last name, start date, precinct number, and years of service. [f_name, l_name, start_date, pct_num, years_of_service]  */
+
+SELECT Person.f_name, Person.l_name, o1.start_date, o1.pct_num, (round((Current_date - o1.start_date)/365.25)) as years_of_service
+FROM Officer as o1, Person, Precinct
+WHERE o1.ssn = Person.ssn
+AND Precinct.pct_num = o1.pct_num
+AND Precinct.dept_name = 'Boston Police Department'
+AND ((Current_date - o1.start_date)/365.25) =
+(SELECT max((Current_date - o2.start_date)/365.25) as years_of_service
+FROM Officer as o2
+WHERE Precinct.pct_num = o2.pct_num)
+
+/* Query #3: Find all non-officers whose first names start with J.[Person.f_name, Person.l_name, Person.ssn] */
+
+SELECT PERSON.F_NAME, PERSON.L_NAME, PERSON.SSN
+FROM PERSON 
+FULL JOIN OFFICER 
+ON PERSON.SSN = OFFICER.SSN
+WHERE OFFICER.BADGE_NUM IS NULL
+AND PERSON.F_NAME LIKE 'J%'; 
+
+/* Query #4: Find the people who are listed as suspects for more than one crime and find each crime the person is suspected of committing, the date each crime occurred, and the report each crime belongs to. [Person.f_name, Person.l_name, Report.report_num, Report_Person_Involved.role, Crime.name, Report_Crime_Record.occurence_date] */
+
+WITH X AS
+(SELECT P.SSN, P.F_NAME, P.L_NAME
+FROM PERSON P, REPORT R, REPORT_PERSON_INVOLVED RP, CRIME C, REPORT_CRIME_RECORD RC
+WHERE P.SSN = RP.SSN
+AND RP.REPORT_NUM = R.REPORT_NUM 
+AND RC.REPORT_NUM = RP.REPORT_NUM
+AND C.SECTION = RC.SECTION
+AND RP.ROLE = 'Suspect'
+GROUP BY P.SSN 
+HAVING COUNT(*) > 1)
+
+SELECT X.F_NAME, X.L_NAME, R.REPORT_NUM, RP.ROLE, C.NAME, RC.OCCURENCE_DATE 
+FROM X, REPORT R, REPORT_PERSON_INVOLVED RP, CRIME C, REPORT_CRIME_RECORD RC
+WHERE X.SSN = RP.SSN
+AND RP.ROLE = 'Suspect'
+AND RP.REPORT_NUM = R.REPORT_NUM 
+AND RC.REPORT_NUM = RP.REPORT_NUM
+AND C.SECTION = RC.SECTION
+ORDER BY OCCURENCE_DATE ASC; 
+
+/* Query #5: Find all officers that are involved with report(s) regarding a kidnapping. [badge_num, f_name, l_name]  */
+
+SELECT Distinct Officer.badge_num, Person.f_name, Person.l_name 
+FROM Officer, Report_Officer_Involved, Person
+WHERE Officer.badge_num = Report_Officer_Involved.badge_num
+AND Officer.ssn = Person.ssn
+AND Report_Officer_Involved.report_num IN
+(SELECT Report.report_num
+FROM Crime, Report_Crime_Record, Report
+WHERE Crime.name = 'Kidnapping'
+AND Crime.section = Report_Crime_Record.section
+AND Report.report_num = Report_Crime_record.report_num)
+
+/* Query #6: Find all suspects who were suspected of committing a crime that occured in a city they do not live in. */
+
+SELECT person.ssn as rare_suspect, person.f_name, person.l_name, report_crime_record.location as crime_location, person.city as residing_city
+FROM person, report_person_involved, report, crime, report_crime_record
+WHERE person.ssn = report_person_involved.ssn
+AND report.report_num = report_person_involved.report_num
+AND report.report_num = report_crime_record.report_num
+AND report_person_involved.role = 'Suspect'
+AND report_crime_record.location != person.city
+GROUP BY person.ssn, report_crime_record.location; 
+
+/* Query #7: Find how many lockers are in each precinct */
+
+SELECT COUNT (distinct locker.locker_num) as total_lockers, PRECINCT.PCT_NUM, department.dept_name
+FROM LOCKER
+FULL JOIN PRECINCT ON PRECINCT.PCT_NUM = LOCKER.PCT_NUM
+FULL JOIN DEPARTMENT ON DEPARTMENT.DEPT_NAME = LOCKER.DEPT_NAME
+GROUP BY PRECINCT.PCT_NUM, DEPARTMENT.DEPT_NAME;
+
+
+/* SQL modification/insert statements */
+
+
+/* Scenario: Jill Kendrick moves to Chicago; address is updated */
+UPDATE Person
+SET street_address = '932 Maple Dr.',
+city = 'Chicago',
+state = 'IL',
+zip_code = 60061
+WHERE ssn = 1111192932
+
+/* Scenario: Officer retires; changes end-date tuple from null to 2022-12-08 */
+UPDATE Officer
+SET end_date = '2022-12-08'
+WHERE badge_num = 13
+
+/* Scenario: A new officer joins BPD’s Precinct 2 */
+INSERT INTO Person VALUES (1204369810, 'Gary', 'Snail', '1994-04-03', 'M', '113 Seasick St.', 'Boston','MA', 12111);
+INSERT INTO Officer VALUES (17, 'Officer', '2022-12-08', null, 59000, 1204369810, 2, 'Boston Police Department', 2);
+
+
